@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	
+    	<script src="js/jquery.js"></script>
+		<script src="js/keys1.js"></script>
+		<script src="js/keys2.js"></script>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+	</head>
+	<body>
+		<script>
+			var timelimit = 10;
+			var time=0;
+			var canvasElement, canvas, CANVAS_WIDTH, CANVAS_HEIGHT;
+			var score = 0;
+			var tile1, tile2, tile3;
+			function tle()
+			{
+				var x = document.getElementById('tl').value;
+				if(!isNaN(x) && x!="")
+					timelimit = x;
+				else
+					alert('Not a valid time!\nUsing 10 seconds as the default value.');
+			}
+			var FPS = 8;
+			var threading;
+			
+			function loadcanvas() {
+				canvasElement = document.getElementById("mycanvas");
+				canvasElement.width = $(window).width()/3;
+				canvasElement.height = $(window).height() - 50;
+				CANVAS_WIDTH = canvasElement.width;
+				CANVAS_HEIGHT = canvasElement.height;
+				canvas = canvasElement.getContext("2d");
+				canvas.fillStyle = 000;
+				var xt = Math.floor(Math.random() * 3);
+				tile1 = xt;
+				xt = Math.floor(Math.random() * 3);
+				tile2 = xt;
+				xt = Math.floor(Math.random() * 3);
+				tile3 = xt;
+				console.log(tile1, tile2, tile3);
+				blacktile.draw(tile1, 0);
+				blacktile.draw(tile2, 1);
+				blacktile.draw(tile3, 2);
+				drawlines();
+				tle();
+				threading=setInterval(function() {
+				draw();
+				update();
+			}, 1000/FPS)
+			}
+			function drawlines()
+			{
+				canvas.beginPath();
+				canvas.moveTo(CANVAS_WIDTH/3,0);
+				canvas.lineTo(CANVAS_WIDTH/3,CANVAS_HEIGHT);
+				canvas.moveTo(2*CANVAS_WIDTH/3,0);
+				canvas.lineTo(2*CANVAS_WIDTH/3,CANVAS_HEIGHT);
+				canvas.moveTo(0,CANVAS_HEIGHT/3);
+				canvas.lineTo(CANVAS_WIDTH,CANVAS_HEIGHT/3);
+				canvas.moveTo(0,2*CANVAS_HEIGHT/3);
+				canvas.lineTo(CANVAS_WIDTH,2*CANVAS_HEIGHT/3);
+				canvas.stroke();
+			}
+			function draw() {
+				var xt = Math.floor(Math.random() * 3);
+				var yt = Math.floor(Math.random() * 3);
+			}
+			var validkey = ["keydown.a", "keydown.s", "keydown.d"];
+			var blacktile =
+			{
+				color: "#000",
+				x: 0,
+				y: 0,
+				width: $(window).width()/9,
+				height: ($(window).height()-50)/3,
+				draw: function(z1, z2)
+				{
+					canvas.fillStyle = this.color;
+					canvas.fillRect(z1*this.width, z2*this.height, this.width, this.height);
+				},
+				update: function()
+				{
+					tile3 = tile2;
+					tile2 = tile1;
+					tile1 = Math.floor(Math.random() * 3);
+					canvas.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+					drawlines();
+					blacktile.draw(tile1, 0);
+					blacktile.draw(tile2, 1);
+					blacktile.draw(tile3, 2);
+				}
+			}
+			function update(){
+				if ((keydown.a && tile3==0)||(keydown.s && tile3==1)||(keydown.d && tile3==2)) {
+					score++;
+					blacktile.update();
+				}
+				time += 1/FPS;
+				document.getElementById("score").innerHTML=score;
+				document.getElementById("time").innerHTML=time.toPrecision(4);
+				if(time==timelimit)
+				{
+					clearInterval(threading);
+					document.getElementById("score").innerHTML = "You went through " + score + " tiles!";
+				}
+			}
+
+		</script>
+		<br>
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span1"></div>
+				<div class="span5">
+					<canvas id="mycanvas" style="border:2px solid #000;"></canvas>
+				</div>
+				<div class="span6">
+					<br><font size="+2"><span>Score:&nbsp; </span><span id="score"></span></font><br><br>
+					<font size="+2"><span>Time Elapsed:&nbsp; </span><span id="time"></span></font><br><br>
+					<input class="span4" type="text" placeholder="Time Limit in Seconds" id="tl">
+					<button class="span3 btn btn-success" onclick="loadcanvas();">Start Game</button><br><br>
+					<div><b><u>Instructions</u>:</b><br>
+						Input the number of seconds you want the timer to run for and click on Start Game.<br>
+						Keys 'A', 'S' and 'D' on your keyboard are to be used to tap the tiles.<br>
+						Note the black tile in the last row (row 3) and press A, S, or D accordingly.<br>
+						A for the leftmost, S for the middle one, and D for the rightmost.<br><br>
+						Check your reflexes!<br><br><br><br>
+						<i>Created by: 
+							<a href="http://www.facebook.com/aseem.wizhack" target="_blank">Aseem Raj</a><br>
+							Still in development.
+						</i>
+					</div><br>
+				</div>
+			</div>
+		</div>
+	</body>			
+</html>
