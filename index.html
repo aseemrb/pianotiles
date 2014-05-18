@@ -14,10 +14,11 @@
 			var canvasElement, canvas, CANVAS_WIDTH, CANVAS_HEIGHT;
 			var score = 0;
 			var tile1, tile2, tile3;
+			var playtime = 0;
 			function tle()
 			{
 				var x = document.getElementById('tl').value;
-				if(!isNaN(x) && x!="")
+				if(!isNaN(x))
 					timelimit = x;
 				else
 					alert('Not a valid time!\nUsing 10 seconds as the default value.');
@@ -46,9 +47,9 @@
 				drawlines();
 				tle();
 				threading=setInterval(function() {
-				draw();
-				update();
-			}, 1000/FPS)
+					draw();
+					update();
+				}, 1000/FPS)
 			}
 			function drawlines()
 			{
@@ -96,6 +97,15 @@
 				if ((keydown.a && tile3==0)||(keydown.s && tile3==1)||(keydown.d && tile3==2)) {
 					score++;
 					blacktile.update();
+					var audio = document.getElementById("sample");
+					audio.currentTime = playtime;
+					audio.play();
+					audio.addEventListener('timeupdate', function()
+					{
+				        if (audio.currentTime >= playtime + 1/FPS)
+				            audio.pause();
+				    }, false);
+					playtime += 1/FPS + 0.2;
 				}
 				time += 1/FPS;
 				document.getElementById("score").innerHTML=score;
@@ -122,6 +132,7 @@
 					<button class="span3 btn btn-success" onclick="loadcanvas();">Start Game</button><br><br>
 					<div><b><u>Instructions</u>:</b><br>
 						Input the number of seconds you want the timer to run for and click on Start Game.<br>
+						Leave blank for infinite time<br><br>
 						Keys 'A', 'S' and 'D' on your keyboard are to be used to tap the tiles.<br>
 						Note the black tile in the last row (row 3) and press A, S, or D accordingly.<br>
 						A for the leftmost, S for the middle one, and D for the rightmost.<br><br>
@@ -131,6 +142,7 @@
 							Still in development.
 						</i>
 					</div><br>
+					<audio id="sample" src="resources/furelise.mp3" preload></audio>
 				</div>
 			</div>
 		</div>
