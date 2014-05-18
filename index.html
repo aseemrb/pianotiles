@@ -9,8 +9,8 @@
 	<body>
 		<script>
 			var timelimit = 10, time=0, foo = true, score = 0, playtime = 0;
-			var canvasElement, canvas, CANVAS_WIDTH, CANVAS_HEIGHT;
-			var tile1, tile2, tile3;
+			var canvasElement, canvas, CANVAS_WIDTH, CANVAS_HEIGHT, threading;
+			var tile1, tile2, tile3, tile4;
 			function tle()
 			{
 				var x = document.getElementById('tl').value;
@@ -19,7 +19,6 @@
 				else
 					alert('Not a valid time!\nUsing 10 seconds as the default value.');
 			}
-			var threading;
 			
 			function loadcanvas() {
 				keydown.a = false;
@@ -37,16 +36,19 @@
 				CANVAS_HEIGHT = canvasElement.height;
 				canvas = canvasElement.getContext("2d");
 				canvas.fillStyle = 000;
-				var xt = Math.floor(Math.random() * 3);
+				var xt = Math.floor(Math.random() * 4);
 				tile1 = xt;
-				xt = Math.floor(Math.random() * 3);
+				xt = Math.floor(Math.random() * 4);
 				tile2 = xt;
-				xt = Math.floor(Math.random() * 3);
+				xt = Math.floor(Math.random() * 4);
 				tile3 = xt;
-				console.log(tile1, tile2, tile3);
+				xt = Math.floor(Math.random() * 4);
+				tile4 = xt;
+				console.log(tile1, tile2, tile3, tile4);
 				blacktile.draw(tile1, 0);
 				blacktile.draw(tile2, 1);
 				blacktile.draw(tile3, 2);
+				blacktile.draw(tile4, 3);
 				drawlines();
 				tle();
 				clearInterval(threading);
@@ -64,14 +66,18 @@
 			function drawlines()
 			{
 				canvas.beginPath();
-				canvas.moveTo(CANVAS_WIDTH/3,0);
-				canvas.lineTo(CANVAS_WIDTH/3,CANVAS_HEIGHT);
-				canvas.moveTo(2*CANVAS_WIDTH/3,0);
-				canvas.lineTo(2*CANVAS_WIDTH/3,CANVAS_HEIGHT);
-				canvas.moveTo(0,CANVAS_HEIGHT/3);
-				canvas.lineTo(CANVAS_WIDTH,CANVAS_HEIGHT/3);
-				canvas.moveTo(0,2*CANVAS_HEIGHT/3);
-				canvas.lineTo(CANVAS_WIDTH,2*CANVAS_HEIGHT/3);
+				canvas.moveTo(CANVAS_WIDTH/4,0);
+				canvas.lineTo(CANVAS_WIDTH/4,CANVAS_HEIGHT);
+				canvas.moveTo(2*CANVAS_WIDTH/4,0);
+				canvas.lineTo(2*CANVAS_WIDTH/4,CANVAS_HEIGHT);
+				canvas.moveTo(3*CANVAS_WIDTH/4,0);
+				canvas.lineTo(3*CANVAS_WIDTH/4,CANVAS_HEIGHT);
+				canvas.moveTo(0,CANVAS_HEIGHT/4);
+				canvas.lineTo(CANVAS_WIDTH,CANVAS_HEIGHT/4);
+				canvas.moveTo(0,2*CANVAS_HEIGHT/4);
+				canvas.lineTo(CANVAS_WIDTH,2*CANVAS_HEIGHT/4);
+				canvas.moveTo(0,3*CANVAS_HEIGHT/4);
+				canvas.lineTo(CANVAS_WIDTH,3*CANVAS_HEIGHT/4);
 				canvas.stroke();
 			}
 			function draw() {
@@ -84,8 +90,8 @@
 				color: "#000",
 				x: 0,
 				y: 0,
-				width: $(window).width()/9,
-				height: ($(window).height()-50)/3,
+				width: $(window).width()/12,
+				height: ($(window).height()-50)/4,
 				draw: function(z1, z2)
 				{
 					canvas.fillStyle = this.color;
@@ -93,22 +99,24 @@
 				},
 				update: function()
 				{
+					tile4 = tile3;
 					tile3 = tile2;
 					tile2 = tile1;
-					tile1 = Math.floor(Math.random() * 3);
+					tile1 = Math.floor(Math.random() * 4);
 					canvas.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 					drawlines();
 					blacktile.draw(tile1, 0);
 					blacktile.draw(tile2, 1);
 					blacktile.draw(tile3, 2);
+					blacktile.draw(tile4, 3);
 				}
 			}
 			function update(z) {
-				if(z==49 || z==50 || z==51)
+				if(z==49 || z==50 || z==51 || z==52)
 				{
-					if((z==49 && tile3==0)||(z==50 && tile3==1)||(z==51 && tile3==2))
+					if((z==49 && tile4==0)||(z==50 && tile4==1)||(z==51 && tile4==2)||(z==52 && tile4==3))
 					{
-						console.log(tile3);
+						console.log(tile4);
 						score++;
 						blacktile.update();
 						var audio = document.getElementById("sample");
