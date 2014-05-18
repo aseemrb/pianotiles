@@ -23,10 +23,13 @@
 				else
 					alert('Not a valid time!\nUsing 10 seconds as the default value.');
 			}
-			var FPS = 8;
+			var FPS = 6;
 			var threading;
 			
 			function loadcanvas() {
+				keydown.a = false;
+				keydown.s = false;
+				keydown.d = false;
 				time = 0;
 				score = 0;
 				playtime = 0;
@@ -97,18 +100,26 @@
 				}
 			}
 			function update(){
-				if ((keydown.a && tile3==0)||(keydown.s && tile3==1)||(keydown.d && tile3==2)) {
-					score++;
-					blacktile.update();
-					var audio = document.getElementById("sample");
-					audio.currentTime = playtime;
-					audio.play();
-					audio.addEventListener('timeupdate', function()
+				if(keydown.a || keydown.s || keydown.d)
+				{
+					if ((keydown.a && tile3==0)||(keydown.s && tile3==1)||(keydown.d && tile3==2)) {
+						score++;
+						blacktile.update();
+						var audio = document.getElementById("sample");
+						audio.currentTime = playtime;
+						audio.play();
+						audio.addEventListener('timeupdate', function()
+						{
+					        if (audio.currentTime >= playtime + 1/FPS)
+					            audio.pause();
+					    }, false);
+						playtime += 1/FPS + 0.2;
+					}
+					else
 					{
-				        if (audio.currentTime >= playtime + 1/FPS)
-				            audio.pause();
-				    }, false);
-					playtime += 1/FPS + 0.2;
+						clearInterval(threading);
+						alert("You stepped on the wrong tile. Game Over!");
+					}
 				}
 				time += 1/FPS;
 				document.getElementById("score").innerHTML=score;
